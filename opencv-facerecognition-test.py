@@ -32,7 +32,7 @@ while rval:
     cv2.imshow("Photobooth", image)
 
     #Read new image
-    rval, frame = cam.read()
+    rval, image = cam.read()
     key = cv2.waitKey(20)
     if key == 27:
         # Exit on esc
