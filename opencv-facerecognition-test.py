@@ -1,5 +1,5 @@
 import cv2
-
+import copy
 # Create the cascade
 faceCascade = cv2.CascadeClassifier("model.xml")
 
@@ -13,7 +13,7 @@ if cam.isOpened(): # try to get the first frame
 else:
     rval = False
 
-
+image_count = 0
 while rval:
     # Convert to grey
     grayImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -24,13 +24,18 @@ while rval:
         minNeighbors=5,
         minSize=(30, 30)
     )
-    # print("Found {0} faces!".format(len(faces)))
+    source_image = copy.deepcopy(image)
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
+    
     cv2.imshow("Photobooth", image)
-
+    if (len(faces)) > 0:
+        # TODO generate image folder if not exists
+        print ('image_{0}'.format(image_count))
+        cv2.imwrite('images/image_{0}.jpg'.format(image_count),source_image)
+        image_count += 1
+        
     #Read new image
     rval, image = cam.read()
     key = cv2.waitKey(20)
