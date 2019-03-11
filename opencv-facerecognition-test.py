@@ -20,7 +20,7 @@ while rval:
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         grayImg,
-        scaleFactor=1.1,
+        scaleFactor=1.3,
         minNeighbors=5,
         minSize=(30, 30)
     )
