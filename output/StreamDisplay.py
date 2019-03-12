@@ -14,6 +14,7 @@ class StreamDisplay:
         cv2.imshow(self.window_name, image)
 
     def draw_text_on_image(self, image, text):
+        text = str(text)
         height, width, channels = image.shape
 
         font = cv2.FONT_HERSHEY_TRIPLEX
