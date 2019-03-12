@@ -3,17 +3,17 @@ import cv2
 
 class StreamDisplay:
 
-    def __init__(self, window_name):
+    def __init__(self, window_name, fullscreen):
         self.window_name = window_name
-        cv2.namedWindow(self.window_name, cv2.WND_PROP_FULLSCREEN)
-        cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.namedWindow(self.window_name)
+        if fullscreen:
+            cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-    def update_display(self, image, text=None):
-        if text:
-            image = self.draw_text_on_image(image, text)
+    def update_display(self, image):
         cv2.imshow(self.window_name, image)
 
-    def draw_text_on_image(self, image, text):
+    @staticmethod
+    def draw_text_on_image(image, text):
         text = str(text)
         height, width, channels = image.shape
 
@@ -27,10 +27,8 @@ class StreamDisplay:
         center_text_width = size[0][0] / 2
         text_location_horizontal = int(width / 2 - center_text_width)
         text_location_vertical = int(height / 2 + center_text_height)
-        image = cv2.putText(image, text, (text_location_horizontal, text_location_vertical),
-                            font, scale_factor, font_color, lineType=line_type)
-
-        return image
+        cv2.putText(image, text, (text_location_horizontal, text_location_vertical),
+                    font, scale_factor, font_color, lineType=line_type)
 
     @staticmethod
     def add_bounding_box_for_objects(image, objects, color):

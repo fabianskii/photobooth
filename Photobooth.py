@@ -11,15 +11,14 @@ from time import sleep
 
 
 class Photobooth:
-    # TODO - implement fullscreen toggle
-    def __init__(self, use_pi_camera=False, resolution=(1280, 720), fullscreen=False):
+    def __init__(self, resolution=(800, 600), use_pi_camera=False, fullscreen=False):
         self._ESC = 27
 
         self._facerecognizer = FaceRecognizer()
         self._smilerecognizer = SmileRecognizer()
 
         self._trigger = SnapshotTrigger("images")
-        self._display = StreamDisplay("Photobooth")
+        self._display = StreamDisplay("Photobooth", fullscreen)
 
         self._camstream = CameraStream(use_pi_camera=use_pi_camera, resolution=resolution).start()
         self._stopped = False
@@ -50,10 +49,11 @@ class Photobooth:
 
             self._display.add_bounding_box_for_objects(image, faces, color=(0, 0, 255))
             self._display.add_bounding_box_for_objects(image, smiles, color=(255, 0, 0))
-            self._display.update_display(image)
 
             if countdown_active:
-                self._display.update_display(image, text=countdown)
+                self._display.draw_text_on_image(image, text=countdown)
+
+            self._display.update_display(image)
 
             if countdown == 0:
                 self._trigger.save_snapshot(copy.deepcopy(image))
@@ -67,10 +67,5 @@ class Photobooth:
                 countdown -= 1
                 timer = time.time()
 
-
         cv2.destroyAllWindows()
         self._camstream.stop()
-
-
-photobooth = Photobooth()
-photobooth.run()

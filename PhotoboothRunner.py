@@ -1,5 +1,7 @@
 import argparse
 
+from Photobooth import Photobooth
+
 parser = argparse.ArgumentParser(description='Photobooth by Fabian Isele & Philipp Schmitt')
 
 parser.add_argument('camera_resolution', type=int, nargs=2,
@@ -13,6 +15,5 @@ parser.add_argument('--fullscreen', action='store_true',
 
 args = parser.parse_args()
 
-print(args.picam)
-print(args.fullscreen)
-print(str(tuple(args.camera_resolution)))
+photobooth = Photobooth(resolution=tuple(args.camera_resolution), use_pi_camera=args.picam, fullscreen=args.fullscreen)
+photobooth.run()
