@@ -1,12 +1,13 @@
 import cv2
 import copy
 from CameraStream import CameraStream
-
+from time import sleep
 # Create the cascade
 faceCascade = cv2.CascadeClassifier("model.xml")
 
 cv2.namedWindow("Photobooth")
 cam = CameraStream(use_pi_camera=True).start()
+sleep(3)
 image = cam.read()
 image_count = 0
 while True:
