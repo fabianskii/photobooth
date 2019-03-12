@@ -15,9 +15,9 @@ facerecognizer = FaceRecognizer()
 smilerecognizer = SmileRecognizer()
 
 trigger = SnapshotTrigger("images")
-display = StreamDisplay()
+display = StreamDisplay("Photobooth")
 
-camstream = CameraStream(use_pi_camera=False, resolution=(1280, 720)).start()
+camstream = CameraStream(use_pi_camera=True, resolution=(1280, 720)).start()
 sleep(2)
 
 while True:
@@ -30,11 +30,13 @@ while True:
         if len(smiles) > 0:
             trigger.save_snapshot(copy.deepcopy(image))
 
-    display.update_display(image, faces)
-    display.update_display(image, smiles)
+    display.add_bounding_box_for_objects(image, faces, color=(0, 0, 255))
+    display.add_bounding_box_for_objects(image, smiles, color=(255, 0, 0))
+    display.update_display(image)
 
     key = cv2.waitKey(20)
     if key == ESC:
         break
 
 cv2.destroyAllWindows()
+camstream.stop()
