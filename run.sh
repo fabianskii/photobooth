@@ -1,4 +1,4 @@
 #!/bin/bash
 
 . venv/bin/activate
-python photobooth.py
+python PhotoboothRunner.py 1280 720 --picam --fullscreen
