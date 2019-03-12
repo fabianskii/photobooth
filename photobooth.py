@@ -15,9 +15,9 @@ facerecognizer = FaceRecognizer()
 smilerecognizer = SmileRecognizer()
 
 trigger = SnapshotTrigger("images")
-display = StreamDisplay()
+display = StreamDisplay("Photobooth")
 
-camstream = CameraStream(use_pi_camera=False, resolution=(1280, 720)).start()
+camstream = CameraStream(use_pi_camera=True, resolution=(1280, 720)).start()
 sleep(2)
 
 while True:
@@ -38,3 +38,4 @@ while True:
         break
 
 cv2.destroyAllWindows()
+camstream.stop()
