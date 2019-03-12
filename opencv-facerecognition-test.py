@@ -1,20 +1,15 @@
 import cv2
 import copy
+from CamerStream import CameraStream
 # Create the cascade
 faceCascade = cv2.CascadeClassifier("model.xml")
 
 cv2.namedWindow("Photobooth")
+cam = CameraStream(usePiCamera=True).start()
 
-# Open cam stream
-cam = cv2.VideoCapture(0)
-
-if cam.isOpened(): # try to get the first frame
-    rval, image = cam.read()
-else:
-    rval = False
 
 image_count = 0
-while rval:
+while true:
     # Convert to grey
     grayImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Detect faces in the image
