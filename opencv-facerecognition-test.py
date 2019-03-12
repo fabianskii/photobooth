@@ -6,7 +6,7 @@ from time import sleep
 faceCascade = cv2.CascadeClassifier("model.xml")
 
 cv2.namedWindow("Photobooth")
-cam = CameraStream(use_pi_camera=True).start()
+cam = CameraStream(use_pi_camera=True, resolution=(1280,720)).start()
 sleep(3)
 image = cam.read()
 image_count = 0
@@ -16,7 +16,7 @@ while True:
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         grayImg,
-        scaleFactor=1.3,
+        scaleFactor=1.5,
         minNeighbors=5,
         minSize=(30, 30)
     )
@@ -28,9 +28,11 @@ while True:
     cv2.imshow("Photobooth", image)
     if (len(faces)) > 0:
         # TODO generate image folder if not exists
-        print('image_{0}'.format(image_count))
-        cv2.imwrite('images/image_{0}.jpg'.format(image_count), source_image)
-        image_count += 1
+            
+        if image_count == 0:
+            print('image_{0}'.format(image_count))      
+            cv2.imwrite('images/image_{0}.jpg'.format(image_count), source_image)
+            image_count += 1
 
     # Read new image
     image = cam.read()
