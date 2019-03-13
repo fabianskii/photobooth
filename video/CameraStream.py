@@ -1,6 +1,6 @@
 class CameraStream:
     def __init__(self, src=0, use_pi_camera=False, resolution=(800, 600),
-                 framerate=32):
+                 framerate=25):
         if use_pi_camera:
             from imutils.video.pivideostream import PiVideoStream
             self.stream = PiVideoStream(resolution=resolution,

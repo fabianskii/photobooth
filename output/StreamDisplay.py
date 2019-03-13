@@ -5,9 +5,12 @@ class StreamDisplay:
 
     def __init__(self, window_name, fullscreen):
         self.window_name = window_name
-        cv2.namedWindow(self.window_name, cv2.WINDOW_AUTOSIZE)
+
         if fullscreen:
+            cv2.namedWindow(self.window_name, cv2.WINDOW_FULLSCREEN)
             cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        else:
+            cv2.namedWindow(self.window_name, cv2.WINDOW_AUTOSIZE)
 
     def update_display(self, image):
         cv2.imshow(self.window_name, image)
