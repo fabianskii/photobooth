@@ -36,7 +36,20 @@ class Photobooth:
         countdown_active = False
         countdown = 3
         timer = time.time()
+
+        self.loop(countdown, countdown_active, timer)
+
+
+
+        cv2.destroyAllWindows()
+        self._camstream.stop()
+
+    def loop(self, countdown, countdown_active, timer):
+        loop_durations_start = []
+        loop_durations_stop = []
         while not self._stopped:
+            loop_durations_start.append(time.time())
+
             image = self._camstream.read()
 
             faces = self._facerecognizer.recognize(image)
@@ -60,13 +73,14 @@ class Photobooth:
 
             self._display.update_display(image)
 
-
             key = cv2.waitKey(20)
             if key == self._ESC:
                 self._stopped = True
             if countdown_active and time.time() - timer >= 1:
                 countdown -= 1
                 timer = time.time()
-
-        cv2.destroyAllWindows()
-        self._camstream.stop()
+            loop_durations_stop.append(time.time())
+        average = 0
+        for idx, duration_start in enumerate(loop_durations_start):
+            average += loop_durations_stop[idx] - duration_start
+        print(str(average/len(loop_durations_stop)))
