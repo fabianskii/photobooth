@@ -65,8 +65,8 @@ class Photobooth:
                 countdown = 3
                 countdown_active = False
 
-            self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
-            self._display.add_bounding_box_for_objects(image, smiles, color=(255, 0, 0))
+            #self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
+            #self._display.add_bounding_box_for_objects(image, smiles, color=(255, 0, 0))
 
             if countdown_active:
                 self._display.draw_text_on_image(image, text=countdown)
@@ -81,6 +81,11 @@ class Photobooth:
                 timer = time.time()
             loop_durations_stop.append(time.time())
         average = 0
+        averages = []
+        overall = 0
         for idx, duration_start in enumerate(loop_durations_start):
-            average += loop_durations_stop[idx] - duration_start
-        print(str(average/len(loop_durations_stop)))
+            average = loop_durations_stop[idx] - duration_start
+            averages.append(average)
+            overall += average
+        print(str(overall/len(loop_durations_stop)))
+        print(averages)
