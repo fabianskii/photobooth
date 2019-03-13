@@ -25,11 +25,11 @@ while True:
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     cv2.imshow("Photobooth", image)
-    if (len(faces)) > 0:
-        # TODO generate image folder if not exists
-        print('image_{0}'.format(image_count))
-        cv2.imwrite('images/image_{0}.jpg'.format(image_count), source_image)
-        image_count += 1
+    #if (len(faces)) > 0:
+     #   # TODO generate image folder if not exists
+      #  print('image_{0}'.format(image_count))
+       # cv2.imwrite('images/image_{0}.jpg'.format(image_count), source_image)
+        #image_count += 1
 
     # Read new image
     image = cam.read()
