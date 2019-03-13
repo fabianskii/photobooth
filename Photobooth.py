@@ -47,7 +47,12 @@ class Photobooth:
                     countdown_active = True
                     timer = time.time()
 
-            self._display.add_bounding_box_for_objects(image, faces, color=(0, 0, 255))
+            if countdown == 0:
+                self._trigger.save_snapshot(copy.deepcopy(image))
+                countdown = 3
+                countdown_active = False
+
+            self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
             self._display.add_bounding_box_for_objects(image, smiles, color=(255, 0, 0))
 
             if countdown_active:
@@ -55,10 +60,6 @@ class Photobooth:
 
             self._display.update_display(image)
 
-            if countdown == 0:
-                self._trigger.save_snapshot(copy.deepcopy(image))
-                countdown = 3
-                countdown_active = False
 
             key = cv2.waitKey(20)
             if key == self._ESC:
