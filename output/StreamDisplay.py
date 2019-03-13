@@ -7,7 +7,7 @@ class StreamDisplay:
         self.window_name = window_name
 
         if fullscreen:
-            cv2.namedWindow(self.window_name, cv2.WINDOW_FULLSCREEN)
+            cv2.namedWindow(self.window_name, cv2.WND_PROP_FULLSCREEN)
             cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         else:
             cv2.namedWindow(self.window_name, cv2.WINDOW_AUTOSIZE)
