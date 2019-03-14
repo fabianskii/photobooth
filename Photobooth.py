@@ -6,7 +6,6 @@ import sys
 
 from recognition.FaceRecognizer import FaceRecognizer
 from recognition.SmileRecognizer import SmileRecognizer
-from smile import smileCascade
 from video.CameraStream import CameraStream
 from output.StreamDisplay import StreamDisplay
 from output.SnapshotTrigger import SnapshotTrigger
@@ -26,6 +25,7 @@ class Photobooth:
 
         self._camstream = CameraStream(use_pi_camera=use_pi_camera, resolution=resolution).start()
         self._stopped = False
+        self._smile_cascade = cv2.CascadeClassifier('recognition/haarcascades/smile.xml')
 
         print("Using OpenCV: " + cv2.getVersionString())
         print("Using Python: " + sys.version)
@@ -49,26 +49,6 @@ class Photobooth:
         cv2.destroyAllWindows()
         self._camstream.stop()
 
-    def _smile_detection(self, faces, gray, img):
-        smile_detected = False
-        for (x, y, w, h) in faces:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            roi_gray = gray[y:y + h, x:x + w]
-            roi_color = img[y:y + h, x:x + w]
-
-            smile = smileCascade.detectMultiScale(
-                roi_gray,
-                scaleFactor=1.5,
-                minNeighbors=15,
-                minSize=(25, 25),
-            )
-
-            for (xx, yy, ww, hh) in smile:
-                cv2.rectangle(roi_color, (xx, yy), (xx + ww, yy + hh), (0, 255, 0), 2)
-            if len(smile) > 0:
-                return True
-        return False
-
     def loop(self, countdown, countdown_active, timer):
         loop_durations_start = []
         loop_durations_stop = []
@@ -83,7 +63,7 @@ class Photobooth:
             if len(faces) > 0:
                 image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-                smiles = self._smile_detection(faces, image_gray, image)
+                smiles = self._smilerecognizer.recognize(faces, image_gray, image)
                 print(smiles)
                 if smiles and not countdown_active:
                     countdown_active = True
@@ -95,7 +75,7 @@ class Photobooth:
                 countdown_active = False
 
             self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
-            #self._display.add_bounding_box_for_objects(image, smiles, color=(0, 0, 255))
+            # self._display.add_bounding_box_for_objects(image, smiles, color=(0, 0, 255))
 
             if countdown_active:
                 self._display.draw_text_on_image(image, text=countdown)
