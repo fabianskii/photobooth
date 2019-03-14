@@ -7,8 +7,8 @@ class CameraStream:
                                         framerate=framerate)
 
         else:
-            from imutils.video.webcamvideostream import WebcamVideoStream
-            self.stream = WebcamVideoStream(src=src)
+            from video.webcamvideostream import WebcamVideoStream
+            self.stream = WebcamVideoStream(src=src, resolution=resolution)
 
     def start(self):
         return self.stream.start()

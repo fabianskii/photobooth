@@ -17,7 +17,6 @@ class SnapshotTrigger:
         create_folder(self.folder)
 
     def save_snapshot(self, rgb_image):
-        if self.image_count < 1:
-            print('image_{0}'.format(self.image_count))
-            cv2.imwrite('{0}/image_{1}.jpg'.format(self.folder, self.image_count), rgb_image)
-            self.image_count += 1
+        cv2.imwrite('{0}/image_{1}.jpg'.format(self.folder, self.image_count), rgb_image)
+        print('captured image_{0}'.format(self.image_count))
+        self.image_count += 1

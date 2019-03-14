@@ -1,7 +1,8 @@
 import cv2
-print(cv2.__version__)
 import copy
 import time
+import sys
+
 from recognition.FaceRecognizer import FaceRecognizer
 from recognition.SmileRecognizer import SmileRecognizer
 from video.CameraStream import CameraStream
@@ -14,7 +15,6 @@ from time import sleep
 class Photobooth:
     def __init__(self, resolution=(800, 600), use_pi_camera=False, fullscreen=False):
         self._ESC = 27
-        self._DELAY = 5
 
         self._facerecognizer = FaceRecognizer()
         self._smilerecognizer = SmileRecognizer()
@@ -24,9 +24,9 @@ class Photobooth:
 
         self._camstream = CameraStream(use_pi_camera=use_pi_camera, resolution=resolution).start()
         self._stopped = False
-        self._faces = []
-        self._smiles = []
-        
+
+        print("Using OpenCV: " + cv2.getVersionString())
+        print("Using Python: " + sys.version)
         sleep(2)
 
     @property
@@ -55,22 +55,21 @@ class Photobooth:
 
             image = self._camstream.read()
 
-           
-            self._faces = self._facerecognizer.recognize(image)
-            if len(self._faces) > 0:
-                self._smiles = self._smilerecognizer.recognize(image)
-                if len(self._smiles) > 0 and not countdown_active:
+            faces = self._facerecognizer.recognize(image)
+            smiles = []
+            if len(faces) > 0:
+                smiles = self._smilerecognizer.recognize(image)
+                if len(smiles) > 0 and not countdown_active:
                     countdown_active = True
                     timer = time.time()
-
 
             if countdown == 0:
                 self._trigger.save_snapshot(copy.deepcopy(image))
                 countdown = 3
                 countdown_active = False
 
-            self._display.add_bounding_box_for_objects(image, self._faces, color=(0, 255, 0))
-            self._display.add_bounding_box_for_objects(image, self._smiles, color=(255, 0, 0))
+            self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
+            self._display.add_bounding_box_for_objects(image, smiles, color=(0, 0, 255))
 
             if countdown_active:
                 self._display.draw_text_on_image(image, text=countdown)
