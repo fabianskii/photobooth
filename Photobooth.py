@@ -1,4 +1,5 @@
 import cv2
+print(cv2.__version__)
 import copy
 import time
 from recognition.FaceRecognizer import FaceRecognizer
@@ -25,7 +26,7 @@ class Photobooth:
         self._stopped = False
         self._faces = []
         self._smiles = []
-        self._delaycounter = 0
+        
         sleep(2)
 
     @property
@@ -54,15 +55,14 @@ class Photobooth:
 
             image = self._camstream.read()
 
-            if self._delaycounter == 0:
-                self._faces = self._facerecognizer.recognize(image)
-                if len(self._faces) > 0:
-                    self._smiles = self._smilerecognizer.recognize(image)
-                    if len(self._smiles) > 0 and not countdown_active:
-                        countdown_active = True
-                        timer = time.time()
+           
+            self._faces = self._facerecognizer.recognize(image)
+            if len(self._faces) > 0:
+                self._smiles = self._smilerecognizer.recognize(image)
+                if len(self._smiles) > 0 and not countdown_active:
+                    countdown_active = True
+                    timer = time.time()
 
-                self._delaycounter = self._DELAY
 
             if countdown == 0:
                 self._trigger.save_snapshot(copy.deepcopy(image))
@@ -85,7 +85,6 @@ class Photobooth:
                 countdown -= 1
                 timer = time.time()
 
-            self._delaycounter -= 1
             loop_durations_stop.append(time.time())
 
         average = 0
