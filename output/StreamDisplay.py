@@ -33,7 +33,3 @@ class StreamDisplay:
         cv2.putText(image, text, (text_location_horizontal, text_location_vertical),
                     font, scale_factor, font_color, lineType=line_type)
 
-    @staticmethod
-    def add_bounding_box_for_objects(image, objects, color):
-        for (x, y, w, h) in objects:
-            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)

@@ -1,4 +1,3 @@
-from sklearn.svm import SVC
 import cv2
 import copy
 import time
@@ -50,32 +49,31 @@ class Photobooth:
         self._camstream.stop()
 
     def loop(self, countdown, countdown_active, timer):
-        loop_durations_start = []
-        loop_durations_stop = []
+        timeout = False
+        timeout_timer = time.time()
         while not self._stopped:
-            loop_durations_start.append(time.time())
 
             image = self._camstream.read()
+            image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-            faces = self._facerecognizer.recognize(image)
+            faces = self._facerecognizer.recognize(image_gray, image)
             smiles = []
-            print(len(faces))
             if len(faces) > 0:
-                image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-                smiles = self._smilerecognizer.recognize(faces, image_gray, image)
-                print(smiles)
-                if smiles and not countdown_active:
+                smile_detected, smiles = self._smilerecognizer.recognize(faces, image_gray, image)
+
+                if smile_detected and not countdown_active and not timeout:
                     countdown_active = True
                     timer = time.time()
 
             if countdown == 0:
                 self._trigger.save_snapshot(copy.deepcopy(image))
+                image[:, :, :] = 255
+                self._display.update_display(image)
                 countdown = 3
                 countdown_active = False
-
-            self._display.add_bounding_box_for_objects(image, faces, color=(0, 255, 0))
-            # self._display.add_bounding_box_for_objects(image, smiles, color=(0, 0, 255))
+                timeout_timer = time.time()
+                timeout = True
 
             if countdown_active:
                 self._display.draw_text_on_image(image, text=countdown)
@@ -90,14 +88,5 @@ class Photobooth:
                 countdown -= 1
                 timer = time.time()
 
-            loop_durations_stop.append(time.time())
-
-        average = 0
-        averages = []
-        overall = 0
-        for idx, duration_start in enumerate(loop_durations_start):
-            average = loop_durations_stop[idx] - duration_start
-            averages.append(average)
-            overall += average
-        print(str(overall / len(loop_durations_stop)))
-        print(averages)
+            if timeout and time.time() - timeout_timer >= 3:
+                timeout = False
