@@ -55,7 +55,7 @@ class Photobooth:
 
             image = self._camstream.read()
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
+            original_image = copy.deepcopy(image)
             faces = self._facerecognizer.recognize(image_gray, image)
             smiles = []
             if len(faces) > 0:
@@ -67,7 +67,7 @@ class Photobooth:
                     timer = time.time()
 
             if countdown == 0:
-                self._trigger.save_snapshot(copy.deepcopy(image))
+                self._trigger.save_snapshot(original_image)
                 image[:, :, :] = 255
                 self._display.update_display(image)
                 countdown = 3
