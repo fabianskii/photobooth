@@ -4,16 +4,21 @@ from Photobooth import Photobooth
 
 parser = argparse.ArgumentParser(description='Photobooth by Fabian Isele & Philipp Schmitt')
 
-parser.add_argument('camera_resolution', type=int, nargs=2,
-                    help='Camera resolution width height e.g. 800 600')
+parser.add_argument('--picam', action='store_true', help='use PiCam instead of USB camera')
 
-parser.add_argument('--picam', action='store_true',
-                    help='use PiCam instead of USB camera')
+parser.add_argument('--res', action="store", help='Camera resolution for PiCam width height e.g. 800x600')
 
-parser.add_argument('--fullscreen', action='store_true',
-                    help='enable fullscreen')
+parser.add_argument('--fullscreen', action='store_true', help='enable fullscreen')
 
 args = parser.parse_args()
 
-photobooth = Photobooth(resolution=tuple(args.camera_resolution), use_pi_camera=args.picam, fullscreen=args.fullscreen)
+resolution = args.res
+
+if resolution:
+    res_list = resolution.split("x")
+    photobooth = Photobooth(resolution=(int(res_list[0]), int(res_list[1])), use_pi_camera=args.picam,
+                            fullscreen=args.fullscreen)
+else:
+    photobooth = Photobooth(use_pi_camera=args.picam, fullscreen=args.fullscreen)
+
 photobooth.run()
